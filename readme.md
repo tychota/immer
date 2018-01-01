@@ -1,6 +1,6 @@
 # Immer
 
-_Create the next immutable state tree by simply modifying the current tree_
+_Your personal assistant for creating your next immutable state_
 
 ---
 
@@ -150,25 +150,10 @@ const todos = (state = [], action) =>
 
 Creating middleware or a reducer wrapper that applies `immer` automatically is left as exercise for the reader :-).
 
-## Performance
-
-Here is a [simple benchmark](__tests__/performance.js) on the performance of `immer`.
-This test takes 100.000 todo items, and updates 10.000 of them.
-These tests were executed on Node 8.4.0
-
-```
-  performance
-    ✓ just mutate (1ms)                  // No immutability at all
-    ✓ deepclone, then mutate (647ms)     // Clone entire tree, then mutate (no structural sharing!)
-    ✓ handcrafted reducer (17ms)         // Implement it as typical Redux reducer, with slices and spread operator
-    ✓ immutableJS (81ms)                 // Use immutableJS and leverage `withMutations` for best performance
-    ✓ immer - with autofreeze (309ms)    // Immer, with auto freeze enabled
-    ✓ immer - without autofreeze (148ms) // Immer, but without auto freeze enabled
-```
-
 ## Limitations
 
-* This package requires Proxies, so Safari > 9, no Internet Explorer, no React Native on Android. This can potentially done, so feel free to upvote on [#8](https://github.com/mweststrate/immer/issues/8) if you need this :)
+* This package requires Proxies, so Safari > 10, no Internet Explorer, no React Native
+Android (as JavaScript Core on React Native Android is bundled, and rather outdated) and React Native on iOS >= 10.0.0 (since JavaScript Core is not bundled on iOS and updated for major version of iOS). 
 * Currently, only tree shaped states are supported. Cycles could potentially be supported as well (PR's welcome)
 * Currently, only supports plain objects and arrays. Non-plain data structures (like `Map`, `Set`) not (yet). (PR's welcome)
 
@@ -177,6 +162,15 @@ These tests were executed on Node 8.4.0
 * Make sure to modify the draft state you get passed in in the callback function, not the original current state that was passed as the first argument to `immer`!
 * Since immer uses proxies, reading huge amounts of data from state comes with an overhead. If this ever becomes an issue (measure before you optimize!), do the current state analysis before entering the `immer` block or read from the `currentState` rather than the `draftState`
 
-## Credits
+## Changelog
 
-Special thanks goes to @Mendix, which supports it's employees to experiment completely freely two full days a month, which formed the kick-start for this project.
+### 0.0.5
+
+* Fixed `immer` function export, it is now properly exposed as `default`
+* Immer now automatically freezes any state modifications made. Turn this is using `setAutoFreeze(false)`
+* Added support for frozen state trees in strict mode.
+
+### 0.0.4 (31-12-2017)
+
+* Added typescript typings [#11](https://github.com/mweststrate/immer/pull/11) by [@benbraou](https://github.com/benbraou)
+* Fixed bug when setting properties to `undefined`. Fixes [#12](https://github.com/mweststrate/immer/issues/12) through [#13](https://github.com/mweststrate/immer/pull/13) by [@benbraou](https://github.com/benbraou)
